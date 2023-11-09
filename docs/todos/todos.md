@@ -1,7 +1,7 @@
 ## todo
-- 业务逻辑的代码片段 列筛选/editRender  筛选
-- 行合并 整理blog-work-points
-- 维护移动端卡片 自己封装的组件
-- useImperativeHandle forwardRef 收款账号
-- 本地代码片段有几个工具逻辑维护一下
-- nginx
+- 业务场景（nginx）/代码走查 整理
+- 代码片段插件
+- vue3个人主页
+- electron/react native/uniApp
+- canvas/webGL
+- 域名
