@@ -1,9 +1,9 @@
 
-### 高阶函数运用
-#### map替代forEach
+## 高阶函数运用
+### map替代forEach
 需求背景：applyTableData为对象数组，为表格的行记录数据，其中payAmount表示预付金额，该字段可编辑，编辑时需要根据行id找到所编辑行，并更新整个applyTableData。
 
-##### forEach实现
+#### forEach实现
 ```js
   // 编辑本次预付金额回调
   const handlePayAmountChange = (val, record) => {
@@ -17,7 +17,7 @@
     setApplyTableData(_applyTableData)
   }
 ```
-##### map实现
+#### map实现
 ```js
   // 编辑本次预付金额回调
   const handlePayAmountChange = (val, record) => {
@@ -28,9 +28,9 @@
     setApplyTableData(_applyTableData)
   }
 ```
-#### reduce替代forEach
+### reduce替代forEach
 需求背景：applyTableData为对象数组，为表格的行记录数据，其中payAmount表示预付金额，该字段可编辑，编辑时需要实时计算其合计额。
-##### forEach实现
+#### forEach实现
 ```js
   // 更新预付款金额总计值
   const handleGetPrePaySum = () => {
@@ -44,7 +44,7 @@
     setPrePaySum(prePaySum)
   }
 ```
-##### reduce实现
+#### reduce实现
 ```js
   // 更新预付款金额总计值
   const handleGetPrePaySum = () => {
@@ -55,9 +55,9 @@
     setPrePaySum(prePaySum)
   }
 ```
-#### every替代forEach
+### every替代forEach
 需求背景：applyTableData为对象数组，为表格的行记录数据，其中payAmount表示预付金额，需检查是否所有行记录的payAmount都填写了。
-##### forEach实现
+#### forEach实现
 ```js
   // 校验本次预付金额是否全部填写
   const handleCheckPayAmount = () => {
@@ -71,7 +71,7 @@
     return flag
   }
 ```
-##### every实现
+#### every实现
 ```js
   // 校验本次预付金额是否全部填写
   const handleCheckPayAmount = () => {
@@ -79,7 +79,7 @@
     return applyTableData.every(({ payAmount }) => payAmount || payAmount === 0)
   }
 ```
-### 编辑/新增弹窗的判断逻辑
+## 编辑/新增弹窗的判断逻辑
 编辑和新增的弹窗一般会复用同一个组件，所以需要判断是修改还是新增操作。
 一开始是在外部页面中去维护一个值为0，1的act状态，作为参数传入弹窗组件中
 当触发新增或者编辑操作时去修改act的值

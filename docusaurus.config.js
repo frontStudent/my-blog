@@ -6,8 +6,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'SYB Docs',
-  tagline: 'not only frontend but also……',
+  title: 'SYB文档库',
+  tagline: 'Frontend Docs & Code Snippets',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -74,7 +74,13 @@ const config = {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
-            label: '前端笔记',
+            label: '知识库',
+          },
+          {
+            type: 'docSidebar',
+            sidebarId: 'snippetSidebar',
+            position: 'left',
+            label: '代码片段',
           },
           {
             href: 'https://github.com/facebook/docusaurus',
@@ -90,8 +96,8 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: '前端笔记',
-                to: '/docs/intro',
+                label: '知识库',
+                to: '/docs/repo/intro',
               },
             ],
           },
