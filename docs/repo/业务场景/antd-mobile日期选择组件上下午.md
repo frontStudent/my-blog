@@ -1,0 +1,2 @@
+
+antd-mobile中datePicker组件使用filter和renderLabel属性配合可以实现年月日-上下午的选择格式功能。

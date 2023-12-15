@@ -83,6 +83,12 @@ const config = {
             label: '代码片段',
           },
           {
+            type: 'docSidebar',
+            sidebarId: 'columnSidebar',
+            position: 'left',
+            label: '专题记录',
+          },
+          {
             href: 'https://github.com/facebook/docusaurus',
             label: 'GitHub',
             position: 'right',
