@@ -5,7 +5,7 @@
 （antd Form场景中）
 ### 实现思路
 antd官方文档有个相关例子，仿照该例子可以封装一个表单域组件如下：
-```js
+```jsx
 import React, { useState } from 'react'
 import { DatePicker } from 'antd'
 
