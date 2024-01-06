@@ -1,4 +1,4 @@
-### nest入门增删改查demo
+### nest增删改查入门
 参考 https://zhuanlan.zhihu.com/p/652374250
 
 对这个demo的一些改动与扩展：
@@ -72,5 +72,48 @@ nest g filter common/filter/http-exception
 ```
 nest g interceptor common/interceptor/transform
 ```
+
 #### github地址：https://github.com/frontStudent/nest-simple-curd
 其他一些文件内容去这个项目中复制修改即可
+
+### 对两张存在一对多/多对一关系的表进行增删改查
+有一个user表和一个photo表，一个user可以有多个photo，但一个photo只能属于一个user
+
+### nest整合前端项目(vue/react均适用)
+先将前端项目打包，将打包后的文件夹放在nest项目的public文件夹下，然后修改nest项目main.ts文件:
+```ts
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { NestExpressApplication } from '@nestjs/platform-express';
+
+async function bootstrap() {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // const app = await NestFactory.create(AppModule);
+  app.useStaticAssets('public');
+  app.enableCors(); // 允许跨域
+  await app.listen(8084);
+}
+bootstrap();
+```
+
+app.controller.ts文件中改动：
+```ts
+import { Controller, Get, Res } from '@nestjs/common';
+import { Response } from 'express';
+import { AppService } from './app.service';
+import * as path from 'path';
+
+@Controller()
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @Get()
+  getHello(@Res() res: Response): any {
+    res.sendFile(path.join(__dirname, '../public/vue-ui/index.html'));
+    // return this.appService.getHello();
+  }
+}
+```
+
+打开浏览器访问当前端口号下根路径即可进入到前端打包后的index.html页面
+如果存在页面渲染异常问题，检查index.html文件中script标签的src路径是否正确

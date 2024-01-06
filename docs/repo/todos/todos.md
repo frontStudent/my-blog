@@ -1,7 +1,7 @@
 ## todo
-- 业务场景（nginx）/代码走查 整理
-- 代码片段插件
+- 文档完善整理/github仓库完善
+- vscode插件
 - vue3个人主页
 - electron/react native/uniApp
-- canvas/webGL
+- nestJS全栈项目+部署
 - 域名
