@@ -1,0 +1,1 @@
+router文件的index.js中createWebHistory改为createWebHHashHistory

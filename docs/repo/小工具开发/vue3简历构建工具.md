@@ -1,4 +1,3 @@
-## vue3构建简历工具
 
 其中可拆解的demo：
 - html2canvas + jsPDF 实现简历导出为本地pdf
