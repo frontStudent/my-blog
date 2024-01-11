@@ -1,8 +1,9 @@
 ## vue3构建简历工具
 
-涉及到的工具库运用例子：
+其中可拆解的demo：
 - html2canvas + jsPDF 实现简历导出为本地pdf
 - vue-cropper 实现简历照片裁剪上传
+- 浏览器原生事件mousemove/mousedown/mouseup 实现简历照片拖拽调整位置与大小  
 
 ### DOM元素转换为图片，点击按钮下载
 在dom挂载后，调用html2canvas的API即可
@@ -42,7 +43,6 @@ onMounted(() => {
 </script>
 ```
 ### DOM元素转换为图片再转换为pdf，点击按钮下载
-
 ```html
 <template>
   <div>
