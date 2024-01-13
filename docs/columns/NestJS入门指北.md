@@ -19,6 +19,11 @@ npm i -g @nestjs/cli
 nest new project-name
 ```
 
+- 启动项目热更新
+```shell
+npm run start:dev
+```
+
 - 生成模块
 ```shell
 nest g resource user
