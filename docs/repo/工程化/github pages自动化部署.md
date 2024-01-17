@@ -53,7 +53,8 @@ fatal: unable to access 'XXX': Recv failure: Connection was reset
 fatal: unable to access 'XXX': Failed to connect to github.com port 443 after 21097 ms: Couldn't connect to server
 
 ```
-以上这两个报错都是git push操作失败，本质都源于网络问题。在网上有两个解决方法，可以都试一试：
+以上这两个报错都是git push操作失败，本质都源于网络问题。
+在网上有两个解决方法，可以都试一试：(实际都无效，2024.1.17找到新的方法)
 ##### 方法1：
 1. 执行下面的git操作：
 ```
@@ -70,6 +71,18 @@ git config --global --unset https.proxy
 20.205.243.166 github.com
 ```
 目的是DNS解析github.com时，先去本机hosts文件中找，找不到再去DNS服务器找，从而加快访问速度。
+
+##### 方法3（2024.1.17更新）：
+之前遇到的情况是在有vpn能正常打开github的情况下还无法git push成功
+参考 https://blog.csdn.net/zpf1813763637/article/details/128340109 解决
+
+在命令行配置代理：
+```
+git config --global http.proxy 127.0.0.1:7890
+git config --global https.proxy 127.0.0.1:7890
+```
+
+命令中的端口号（7890）为clash的监听port
 
 ### github workflows
 如果每次有改动都要手动执行npm run build和npm run deploy1，太麻烦了，可以利用github workflows来自动化部署。
