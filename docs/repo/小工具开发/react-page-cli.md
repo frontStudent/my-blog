@@ -112,7 +112,7 @@ pnpm add ${packageName} -F react-page-cli
 脚手架入门搭建：
 https://juejin.cn/post/7260144602471776311?searchId=202308150838167957F26DADA19D6D6BE4#heading-6
 
-
+其中值得关注的点：使用 pnpm 来搭建 monorepo 风格的脚手架工程。
 
 
 
