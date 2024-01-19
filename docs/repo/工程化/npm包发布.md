@@ -1,28 +1,3 @@
-
-### 常用命令
-``` bash
-# 本地调试
-# 在待发布包根目录下
-npm link
-
-# 在主工程根目录下
-npm link package_name
-
-# 登录
-npm login
-# 用户名 shiyubei
-# 密码 abc740531089
-# 邮箱 2452909494@qq.com
-
-# 发布
-npm publish
-
-# 处理403报错：
-npm config set registry https://registry.npmjs.org/
-
-# 处理超时报错：（设置代理，端口号为vpn端口号）
-npm config set proxy http://127.0.0.1:7890
-```
 ### vue3组件发布（未使用ts）
 于2024-1-18尝试成功
 
