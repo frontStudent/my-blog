@@ -303,7 +303,7 @@ export const vEditable = {
 ```
 
 #### 基于这三个自定义指令，封装了一个vue组件发布为npm包 
-后续可能有新的迭代，在下面的地址中查看readme文档，不在本文中继续更新
+后续可能有新的迭代，在下面的地址中查看源码和readme文档，不在本文中继续更新
 npm包地址：https://www.npmjs.com/package/vue-magic-box
 github仓库地址：https://github.com/frontStudent/vue-magic-box.git
 
