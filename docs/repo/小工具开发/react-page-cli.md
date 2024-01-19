@@ -100,9 +100,6 @@ npm install react-page-cli
 ## 发布到npm
 ```
 pnpm publish --F react-page-cli 
-
-403报错：
-npm config set registry https://registry.npmjs.org/
 ```
 ## 给react-page-cli添加新的依赖
 ```
