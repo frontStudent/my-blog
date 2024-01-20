@@ -1,4 +1,6 @@
 ## todo
+- my-blog中做个搜索功能
+
 - 文档完善整理/github仓库完善
 - vue-resume
 - react-page-cli&vscode插件

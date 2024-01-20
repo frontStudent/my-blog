@@ -12,6 +12,12 @@ git remote set-url origin <new_url>
 git remote add <new_name> <new_url>
 ```
 
+### branch
+#### 基于当前分支创建新分支
+``` 
+git checkout -b <new_branch_name>
+```
+
 ### submodule
 #### git pull时 submodule出现冲突如何解决？
 1. git merge --abort 取消merge
