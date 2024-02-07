@@ -302,10 +302,10 @@ export const vEditable = {
 }
 ```
 
-#### 基于这三个自定义指令，封装了一个vue组件发布为npm包 
+#### 关于拖拽缩放编辑等操作发布了npm包
 后续可能有新的迭代，在下面的地址中查看源码和readme文档，不在本文中继续更新
-npm包地址：https://www.npmjs.com/package/vue-magic-box
-github仓库地址：https://github.com/frontStudent/vue-magic-box.git
+npm包地址：https://www.npmjs.com/package/vue-drag-drop-transformer
+github仓库地址：https://github.com/frontStudent/vue-drag-drop-transformer.git
 
 ### title样式
 画梯形时使用 clip-path 属性可以为元素创建各种形状的可见区域，可以被用来创建各种形状的裁剪区域
