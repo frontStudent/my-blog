@@ -11,7 +11,10 @@
 假设我们的项目名称为：test-ui
 
 1. 在项目根目录下pnpm init，并新建packages与play文件夹
-2. 根目录安装以下依赖：
+2. 根目录下安装依赖：
+``` bash
+pnpm add vue typescript vite @vitejs/plugin-vue vite-plugin-dts -D -w
+```
 3. 在项目根目录下新建pnpm-workspace.yaml，内容如下：
 ``` yaml title="pnpm-workspace.yaml"
 packages:
@@ -21,6 +24,7 @@ packages:
 4. 新建tsconfig.json，内容如下：
 ### packages目录内容
 1. 在packages下新建文件目录结构如下：
+```
 packages/
 ├── components/
 │   ├── src/
@@ -33,6 +37,7 @@ packages/
 │   └── package.json
 └── utils/
     └── package.json
+```
 
 其中components和utils都用pnpm init初始化
 接下来主要专注于components目录中的内容
@@ -226,16 +231,18 @@ npm config set registry https://registry.npmjs.org/
 # 处理超时报错：（设置代理，端口号为vpn端口号）
 npm config set proxy http://127.0.0.1:7890
 ```
+
+
 ### play目录内容
 新建文件使play目录结构如下：
+```
 play/
 ├── app.vue
 ├── index.html
 ├── main.ts
 ├── package.json
 └── vite.config.ts
-
-
+```
 ### 在之前步骤基础上进行简单打包后再发布
 
 #### 配置vite.config.js进行打包
