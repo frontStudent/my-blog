@@ -11,11 +11,19 @@ git remote set-url origin <new_url>
 ```shell
 git remote add <new_name> <new_url>
 ```
+#### 更新所有远程分支
+```shell
+git remote update origin -p
+```
 
 ### branch
 #### 基于当前分支创建新分支
 ``` 
 git checkout -b <new_branch_name>
+```
+#### 删除本地分支
+```shell
+git branch -D <branch_name>
 ```
 
 ### submodule
