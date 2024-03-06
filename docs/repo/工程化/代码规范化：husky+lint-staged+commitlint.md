@@ -22,6 +22,8 @@ husky install 指令会做两件事情：
 ``` bash
 npm pkg set scripts.prepare="husky install"
 ```
+参考：
+https://segmentfault.com/a/1190000008832423
 
 #### 添加Hook
 husky 使用 husky add <file> [cmd]指令添加 Hook。
