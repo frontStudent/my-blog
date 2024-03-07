@@ -26,7 +26,7 @@ npm pkg set scripts.prepare="husky install"
 https://segmentfault.com/a/1190000008832423
 
 #### 添加Hook
-husky 使用 husky add <file> [cmd]指令添加 Hook。
+husky 使用 husky add {file} {cmd} 指令添加 Hook
 ``` bash
 npx husky add .husky/pre-commit "npm test"
 ```
