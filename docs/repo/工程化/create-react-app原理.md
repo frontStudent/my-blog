@@ -1,0 +1,61 @@
+### cra中的重要文件路径解析
+
+#### 一个简单的npm项目例子讲清楚process.cwd()和__dirname的区别
+新建文件夹test-path并用npm init -y进行初始化
+修改package.json中的test命令为node scripts/test.js
+```json
+{
+  "name": "test-path",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node scripts/test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+```
+
+新建scripts文件夹，并在这个文件夹下新建test.js，内容如下：
+
+```js
+const path = require("path");
+
+console.log(process.cwd());
+console.log(__dirname);
+console.log(__filename);
+
+console.log(path.resolve(__dirname, './aa'));
+console.log(path.resolve(process.cwd(), "./aa"));
+
+console.log(path.resolve("aa", "/bb", 'cc'));
+console.log(path.resolve("aa", "bb"));
+
+console.log(path.join('aa', 'bb'))
+```
+在test-path的根目录下运行npm run test，观察输出结果
+
+process.cwd()的结果为当前Node.js进程正在运行的目录，我们是在test-path的根目录下启动node命令的，因此process.cwd()结果就是test-path的根目录
+__dirname则是当前执行程序所在的目录，我们执行的是scripts文件夹下的test.js，那么__dirname自然就是scripts目录
+
+### cra是如何让你在项目中使用全局变量的
+#### 应用场景
+日常开发中对process.env的运用主要是以下两处：
+1. 通过NODE_ENV判断开发环境和生产环境，开发环境会给请求的url上拼一个/api前缀
+process.env.NODE_ENV === 'development' ? '/api' : ''
+2. 通过REACT_APP_PACKAGE判断当前在哪个package下（monorepo多包项目中）
+const MODULE = process.env.REACT_APP_PACKAGE || 'index'
+
+#### 原理解析
+在config文件夹下的env.js中，会用dotenv配合dotenv-expand去读取.env等配置文件中的环境变量然后写到process.env中，然后只暴露出一批在浏览器端可能用得到的环境变量
+
+在webpack.config.js中去引env.js中暴露出的这些环境变量，注入到DefinePlugin插件中从而重新定义process.env，在react项目中就可以使用process.env了
+
+这里cra使用DefinePlugin的方法和webpack官网推荐的做法并不一致，将整个process.env覆盖了
+
+注：在应用场景中提到的两个全局变量设置方式并不同
+
+- process.env.NODE_ENV这个全局变量是在start.js/build.js这两个脚本中设置的，在start.js中会设置`process.env.NODE_ENV = 'development'`，在build.js中会设置`process.env.NODE_ENV = 'production'`
+- REACT_APP_PACKAGE则是在每个package下的.env文件中去设置的

@@ -49,3 +49,5 @@ https://blog.csdn.net/weixin_44263973/article/details/120998615
 
 linux简单命令：
 cd /www/wwwroot
+lsof -i:{端口号}
+kill -9 {pid>}
