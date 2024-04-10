@@ -1,11 +1,6 @@
 ## todo
-- my-blog中做个搜索功能
+全栈：nextJS/nestJS项目 sql docker linux部署 域名 图床
+公司业务：组件/流程配置/超级表单
 
-- 文档完善整理/github仓库完善
-- vue-dnd-transformer&vue-resume
-- react-page-cli&vscode插件
-- ts组件库/react native/uniApp
-- token登录最佳实践
-- nestJS/SpringBoot简易全栈项目源码
-- docker 服务器部署 域名
-- SSR/SSG
+工程化：打包/脚手架原理等
+跨端：react native/uniApp/taro
