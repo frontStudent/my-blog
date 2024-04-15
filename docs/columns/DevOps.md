@@ -51,3 +51,159 @@ linux简单命令：
 cd /www/wwwroot
 lsof -i:{端口号}
 kill -9 {pid>}
+
+## 在腾讯云centos7.6上用docker部署node + mysql
+### 安装docker
+参照 `https://docs.docker.com/engine/install/centos/`
+
+### 创建node + mysql项目
+用root登录腾讯云终端后默认是在根目录的root文件夹下，执行下列命令：
+```bash
+mkdir -p test-node/my-app && cd test-node/my-app
+vi package.json
+```
+按i进入insert模式，粘贴package.json内容如下：
+```json
+{
+  "name": "test-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.3",
+    "mysql2": "^3.9.4",
+    "nodemon": "^3.1.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+```
+按Esc键后输入 :wq 保存并退出
+
+```bash
+vi db.js
+```
+
+按i进入insert模式，粘贴db.js内容如下：
+```js
+const mysql = require("mysql2/promise");
+const pool = mysql.createPool({
+  host: "localhost",
+  port: '3309',
+  user: "root", //数据库用户名
+  database: "test", //数据库
+  password: "123456", //数据库密码
+  waitForConnections: true, //是否允许排队等待
+  connectionLimit: 10, //最大连接数
+});
+module.exports = pool;
+```
+按Esc键后输入 :wq 保存并退出
+
+```bash
+vi index.js
+```
+
+按i进入insert模式，粘贴index.js内容如下：
+```js
+const express = require("express");
+const app = express();
+
+let pool = require("./db.js");
+
+app.get("/", async function (req, res) {
+  const [rows] = await pool.query(`select * from user;`);
+  res.send(JSON.stringify(rows));
+});
+
+app.listen(3002, () => {
+  console.log("Server is running on http://localhost:3002");
+});
+```
+按Esc键后输入 :wq 保存并退出
+
+在my-app下再新建mysql-init文件夹存放初始化sql文件
+```bash
+mkdir mysql-init && cd mysql-init
+vi init.sql
+```
+
+按i进入insert模式，粘贴init.sql内容如下：
+```sql title="init.sql"
+CREATE DATABASE  `test` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+use test;
+
+CREATE TABLE user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO user (username, email) VALUES
+('john_doe', 'john@example.com'),
+('jane_smith', 'jane@example.com'),
+('mike_jackson', 'mike@example.com');
+```
+按Esc键后输入 :wq 保存并退出
+
+### 为项目创建docker-compose.yml
+先cd ../../切换到test-node文件夹下，执行下列命令：
+```bash
+vi docker-compose.yml
+```
+
+按i进入insert模式，粘贴docker-compose.yml内容如下：
+
+```yml
+version: '3.8'
+services:
+  node_app:
+    image: node:latest
+    container_name: node_app
+    volumes:
+      - ./my-app:/app
+    working_dir: /app
+    entrypoint: /bin/sh -c "npm install && npm run serve"
+    ports:
+      - "3003:3002"
+  mysql2:
+    image: mysql
+    container_name: mysql_test
+    ports:
+      - "3309:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    volumes:
+      - ./my-app/mysql-init:/docker-entrypoint-initdb.d/
+```
+
+按Esc键后输入 :wq 保存并退出
+
+### 启动项目
+在test-node文件夹下执行下列命令：
+```bash
+docker compose up -d
+```
+
+### 访问项目并解决报错
+执行
+```bash
+curl http://1.12.238.239:3003
+```
+会报错 curl: (52) Empty reply from server
+
+进行如下操作排查：
+1. 执行docker container ls查看正在运行的容器
+2. 运行docker exec -it node_app bash进入到node_app容器中的终端
+3. 执行npm run serve 发现是数据库连接失败报错
+4. 执行ctrl c退出node服务，再执行exit回到宿主机终端
+5. 运行docker exec -it mysql_test bash进入到mysql_test容器中的终端
+6. mysql -u root -p后输入123456成功进入，用show databases也能查看到test数据库说明init.sql是执行成功的
+7. 用\q退出mysql终端，再执行exit回到宿主机终端
+8. 用cat my-app/db.js查看数据库连接的配置，将localhost修改为服务器的ip
+9. 执行docker restart node_app重启容器，再次curl http://1.12.238.239:3003后成功显示数据
