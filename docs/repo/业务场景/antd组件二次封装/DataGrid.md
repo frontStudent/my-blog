@@ -1,0 +1,43 @@
+
+## components属性覆盖
+
+### 列宽可拖拽
+通过antd Table组件中的components属性来覆盖header中的cell
+
+项目中实现表格列宽可拖拽与掘金较火的文章方案相对比
+https://juejin.cn/post/7182423243553734717?searchId=20240409194905271709A5CF998327BE24
+在拖动过程中不实时重刷表格，而是渲染一个和表格一样高的竖线来指示当前的宽度位置，在onResizeStop里才刷新
+
+刷新时候做保存并不是走浏览器存储，项目里在有menuId和tableId的情况下是请求保存列设置的接口的
+
+react-resizable会给它包裹的子元素加一个react-resizable类名并且加上一个类名为react-resizable-handle的handle
+这边一定需要引入css才能看见这个，直接复制readme里的代码例子是没有拖动示意的
+可以把源码里的css文件复制过来修改，主要就是设置react-resizable-handle这个类名的样式
+
+### 表格行拖拽
+表格行拖拽的实现，是通过引入第三方拖拽库封装一个自己的DragRow组件（项目中用的react-dnd，antd官网提供了dnd-kit的例子），然后再通过antd Table组件中的components属性覆盖掉body中的row
+
+项目中的DataGrid.Sortable是一个高阶组件，会给包着的表格传DragRow组件把原来的row覆盖掉
+应用场景只找到了Page.Query中的Transfer，往antd Transfer中塞了一个表格，这个表格外面套了一个DataGrid.Sortable，但是还要在onRow里自己传moveRow方法进去，否则只能Drag不能Drop
+
+### 可编辑功能
+对DataGrid传入edit属性时，会返回一个单独封装的EditTable
+
+在EditTable中，会对外界传入的components，columns，onRow这几个属性做处理之后再传给antd Table
+
+1. 处理components时，EditTable用EditableRow和EditableCell覆盖了body中的row和cell
+2. 处理columns时，EditTable给每个col都传入了一个新的onCell，这个onCell中额外添加了一些属性，可以在EditableCell的props里拿到，比如editRender
+3. 处理onRow时，EditTable额外添加了一个当前行记录数据record，可以在EditableRow的props里拿到
+
+从上面的介绍可以看出，相比antd官网提供的可编辑表格demo，都是覆盖row和cell，但在总体上有两点更进一步的设计：
+
+1. 将cell中的node抽离出来，改为从columns的editRender传入，这样可以在组件外部自定义业务需要的编辑组件（Input/InputNumber/ComboGrid...）
+2. 将row外部包裹的form挂到了record.$form上，使得外部能拿到record的地方都能拿到并操作form的值
+
+其他小功能拓展：
+1. 全键盘功能，通过传入enterable属性，可以通过上下左右箭头去聚焦相邻的可编辑单元格，原理是监听键盘事件，然后借助dom原生api去寻找对应单元格
+2. 通过mode='performance' 开启性能模式：移除第三方自带鼠标移入移出行的监听
+
+#### 可编辑表格中的多线程校验
+EditTable V3
+创建线程池（web worker的集合），把所有需要校验的数据分块之后，对每一个块都交给当前空闲的worker去处理
