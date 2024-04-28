@@ -6,9 +6,9 @@
 
 ### 从已有taro项目（qince简介）学习
 #### @tarojs/taro  常用API
-页面跳转：navigateTo( { url } )
-页面分享：useShareAppMessage()
-路由参数获取：getCurrentInstance().router.params
+- 页面跳转：navigateTo( { url } )
+- 页面分享：useShareAppMessage()
+- 路由参数获取：getCurrentInstance().router.params
 
 #### LazyImage组件封装
 1. 首先封装一个hook函数useInViewport，它会接收元素的某个唯一类名，然后基于这个类名去观测目标元素是否在视口内，如果目标元素在视口内，则返回visible为true
