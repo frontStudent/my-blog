@@ -1,4 +1,4 @@
-### nest增删改查入门
+## nest增删改查入门
 参考 https://zhuanlan.zhihu.com/p/652374250
 
 对这个demo的一些改动与扩展：
@@ -81,10 +81,82 @@ nest g interceptor common/interceptor/transform
 #### github地址：https://github.com/frontStudent/nest-simple-curd
 其他一些文件内容去这个项目中复制修改即可
 
-### 对两张存在一对多/多对一关系的表进行增删改查
+## 登录注册
+### jwt - 单token - 用户名+密码
+#### `/user/register` 注册接口可能的返回：
+1. 用户名和密码都通过各自的校验了
+```json
+{
+  "code": "1",
+  "data": { "token": "xxx" },
+  "message": "注册成功！"
+}
+```
+2. 用户名和密码未通过各自的校验
+前端表单会校验住不发请求（nest中是用class validator在dto里校验单个参数）
+
+3. 用户名已存在 抛BadRequest异常 经过ExceptionFilter后返回
+```json
+{
+  "code": "0",
+  "statusCode": 400,
+  "message": "该用户名已存在！"
+}
+```
+
+#### `/user/login` 注册接口可能的返回：
+1. 用户名不存在 / 用户名和密码不匹配
+```json
+{
+  "code": "0",
+  "statusCode": 400,
+  "message": "账号或密码输入错误！"
+}
+```
+2. 用户名和密码都正确
+```json
+{
+  "code": "1",
+  "data": { "token": "xxx"  },
+  "message": "登录成功！"
+}
+```
+
+#### `/aaa` 代表登录后才能访问的接口
+nest用@UseGuards(LoginGuard)来保护该接口
+1. header中的token有效
+```json
+{
+  "code": "1",
+  "data": {
+      "currentUser": {
+          "username": "xxx"
+      },
+      "content": "aaa"
+  },
+  "message": "请求成功！"
+}
+```
+2. header中的token无效 抛UnauthorizedException异常 经过ExceptionFilter后返回
+```json
+{
+  "code": "0",
+  "statusCode": 401,
+  "message": "登录已失效，请重新登录！"
+}
+```
+#### 前端axios处理逻辑
+- 请求时：对除了登录和注册接口外的其他接口，在请求头中添加token
+- 响应时：
+拦截器中错误处理时，statusCode为401时单独处理，因为要跳转回登录页面，其他情况直接弹message报错，内容就是后端给的message
+
+拦截器中响应成功处理时，有token时单独处理，因为要跳转到首页，其他情况直接返response.data，也就是后端给的响应结果
+
+
+## 对两张存在一对多/多对一关系的表进行增删改查
 有一个user表和一个photo表，一个user可以有多个photo，但一个photo只能属于一个user
 
-### nest整合前端项目(vue/react均适用)
+## nest整合前端项目(vue/react均适用)
 先将前端项目打包，将打包后的文件夹放在nest项目的public文件夹下，然后修改nest项目main.ts文件:
 ```ts
 import { NestFactory } from '@nestjs/core';
