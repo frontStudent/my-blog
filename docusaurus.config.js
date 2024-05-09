@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'SYB文档库',
-  tagline: 'Frontend Docs & Code Snippets',
+  tagline: 'Front -> Full Stack -> DevOps',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -74,7 +74,7 @@ const config = {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
-            label: '前端笔记',
+            label: '日常笔记',
           },
           {
             type: 'docSidebar',
