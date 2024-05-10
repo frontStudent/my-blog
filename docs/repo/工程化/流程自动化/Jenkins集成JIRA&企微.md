@@ -1,6 +1,6 @@
 ### 背景
 Jenkins版本过低无法使用网上常用的jira插件、企业微信插件以及Build user vars插件
-![jenkins](./imgs/jenkins.png)
+![jenkins](../imgs/jenkins.png)
 但可以直接在构建阶段的脚本中
 1. curl调用jira的api
 2. curl调用企业微信机器人的webhook地址
@@ -8,7 +8,7 @@ Jenkins版本过低无法使用网上常用的jira插件、企业微信插件以
 
 ### 最终效果
 在打包完成后在群里发通知如下图所示：
-![bot](./imgs/bot.png)
+![bot](../imgs/bot.png)
 
 ### 构建脚本部分内容
 
