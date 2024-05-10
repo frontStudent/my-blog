@@ -6,6 +6,10 @@ Jenkins版本过低无法使用网上常用的jira插件、企业微信插件以
 2. curl调用企业微信机器人的webhook地址
 3. curl调用jenkins的api获取构建人信息
 
+### 最终效果
+在打包完成后在群里发通知如下图所示：
+![bot](./imgs/bot.png)
+
 ### 构建脚本部分内容
 
 ```shell
