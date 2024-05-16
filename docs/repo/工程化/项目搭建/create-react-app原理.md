@@ -1,6 +1,6 @@
-### cra中的重要文件路径解析
+## cra中的重要文件路径解析
 
-#### 一个简单的npm项目例子讲清楚process.cwd()和__dirname的区别
+### 一个简单的npm项目例子讲清楚process.cwd()和__dirname的区别
 新建文件夹test-path并用npm init -y进行初始化
 修改package.json中的test命令为node scripts/test.js
 ```json
@@ -40,15 +40,15 @@ console.log(path.join('aa', 'bb'))
 process.cwd()的结果为当前Node.js进程正在运行的目录，我们是在test-path的根目录下启动node命令的，因此process.cwd()结果就是test-path的根目录
 __dirname则是当前执行程序所在的目录，我们执行的是scripts文件夹下的test.js，那么__dirname自然就是scripts目录
 
-### cra是如何让你在项目中使用全局变量的
-#### 应用场景
+## cra是如何让你在项目中使用全局变量的
+### 应用场景
 日常开发中对process.env的运用主要是以下两处：
 1. 通过NODE_ENV判断开发环境和生产环境，开发环境会给请求的url上拼一个/api前缀
 process.env.NODE_ENV === 'development' ? '/api' : ''
 2. 通过REACT_APP_PACKAGE判断当前在哪个package下（monorepo多包项目中）
 const MODULE = process.env.REACT_APP_PACKAGE || 'index'
 
-#### 原理解析
+### 原理解析
 在config文件夹下的env.js中，会用dotenv配合dotenv-expand去读取.env等配置文件中的环境变量然后写到process.env中，然后只暴露出一批在浏览器端可能用得到的环境变量
 
 在webpack.config.js中去引env.js中暴露出的这些环境变量，注入到DefinePlugin插件中从而重新定义process.env，在react项目中就可以使用process.env了
@@ -59,3 +59,88 @@ const MODULE = process.env.REACT_APP_PACKAGE || 'index'
 
 - process.env.NODE_ENV这个全局变量是在start.js/build.js这两个脚本中设置的，在start.js中会设置`process.env.NODE_ENV = 'development'`，在build.js中会设置`process.env.NODE_ENV = 'production'`
 - REACT_APP_PACKAGE则是在每个package下的.env文件中去设置的
+
+## cra中的webpack配置
+### source-map
+```js
+  devtool: isEnvProduction
+    ? shouldUseSourceMap
+      ? 'source-map'
+      : false
+    : isEnvDevelopment && 'cheap-module-source-map',
+```
+shouldUseSourceMap只有当你在env中特意配置了GENERATE_SOURCEMAP=false才会为false，其他情况都为true
+
+生产环境下source-map风格为source-map
+
+开发环境下source-map风格为cheap-module-source-map
+
+相关知识点：
+
+文档链接https://www.webpackjs.com/configuration/devtool/#devtool
+### terser
+optimization.minimizer中使用TerserWebpackPlugin进行代码压缩，内部使用的是terser这一工具
+
+terserOptions中的一些配置项信息不在webpack文档中，在https://github.com/terser/terser#minify-options查看
+
+## 项目中相比cra默认webpack配置之外增删了哪些内容？
+
+### stats
+cra中设置了`stats: 'errors-warnings'`, 项目中将这个配置去掉后，默认每次编译完成就可以显示详细统计信息
+
+### TerserWebpackPlugin
+在terserOptions.compress中增添了三个配置，用于在生产环境移除console.log
+```js
+new TerserPlugin({
+  terserOptions: {
+    ...props,
+    compress: {
+      ...props,
+      drop_console: true,
+      drop_debugger: false,
+      pure_funcs: ['console.log']
+    },
+  }
+})
+```
+### alias
+额外维护了一个alias文件，并在webpack.config.js中引入，增添在resolve.alias中
+
+### splitChunks
+添加了optimization.splitChunks配置
+```js
+splitChunks: {
+  minRemainingSize: 0, // webpack5新属性，防止0尺寸的chunk
+  cacheGroups: isEnvProduction ? {
+    vendors: {
+      test: /[\\/]node_modules[\\/]/,
+      priority: -10,
+      chunks: 'all',
+      name: 'vendors'
+    },
+    common: {
+      test: /[\\/]packages\/common[\\/]/,
+      priority: -10,
+      chunks: 'all',
+      name: 'common'
+    },
+    [`${process.env.REACT_APP_PACKAGE}`]: {
+      test: /[\\/]packages[\\/]${process.env.REACT_APP_PACKAGE}[\\/]/,
+      priority: -10,
+      chunks: 'all',
+      name: `${process.env.REACT_APP_PACKAGE}`
+    },
+    i18n: {
+      test: /[\\/]locale[\\/]|locales[\\/]/,
+      name: 'i18n',
+      chunks: 'async',
+      enforce: true
+    },
+    default: {
+      minChunks: 2,
+      priority: -20,
+      reuseExistingChunk: true
+    }
+  } : undefined
+},
+```
