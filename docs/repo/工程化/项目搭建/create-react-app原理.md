@@ -1,5 +1,4 @@
 ## cra中的重要文件路径解析
-
 ### 一个简单的npm项目例子讲清楚process.cwd()和__dirname的区别
 新建文件夹test-path并用npm init -y进行初始化
 修改package.json中的test命令为node scripts/test.js
@@ -78,10 +77,14 @@ shouldUseSourceMap只有当你在env中特意配置了GENERATE_SOURCEMAP=false�
 相关知识点：
 
 文档链接https://www.webpackjs.com/configuration/devtool/#devtool
-### terser
+### optimization
 optimization.minimizer中使用TerserWebpackPlugin进行代码压缩，内部使用的是terser这一工具
 
 terserOptions中的一些配置项信息不在webpack文档中，在https://github.com/terser/terser#minify-options查看
+### loader
+
+### plugin
+
 
 ## 项目中相比cra默认webpack配置之外增删了哪些内容？
 
@@ -104,7 +107,7 @@ new TerserPlugin({
 })
 ```
 ### alias
-额外维护了一个alias文件，并在webpack.config.js中引入，增添在resolve.alias中
+额外维护了一个alias.js文件，并在webpack.config.js中引入，增添在resolve.alias中
 
 ### splitChunks
 添加了optimization.splitChunks配置
@@ -143,4 +146,79 @@ splitChunks: {
     }
   } : undefined
 },
+```
+
+### loader
+引入less
+```js
+  {
+    test: lessRegex,
+    exclude: lessModuleRegex,
+    use: getStyleLoaders(
+      {
+        importLoaders: 2
+      },
+      'less-loader',
+      {
+        lessOptions: {
+          modifyVars: {
+            'root-entry-name': 'default',
+            'table-header-bg': '#f7f8fa',
+            'table-border-color': '#DADDE1',
+            'table-row-hover-bg': '#f5f6f7',
+            'border-radius-base': '8px',
+            'border-color-base': '#DADDE1',
+            'btn-default-color': '#5C646c',
+            'input-placeholder-color': '#A9B1B9',
+            'table-header-color': '#1a1c1f'
+          },
+          javascriptEnabled: true
+        }
+      }
+    )
+  },
+  {
+    test: lessModuleRegex,
+    use: getStyleLoaders(
+      {
+        importLoaders: 2,
+        modules: true,
+        getLocalIdent: getCSSModuleLocalIdent
+      },
+      'less-loader',
+      {
+        lessOptions: {
+          modifyVars: {
+            'table-header-bg': '#f7f8fa',
+            'table-border-color': '#DADDE1',
+            'table-row-hover-bg': '#f5f6f7',
+            'border-radius-base': '8px',
+            'border-color-base': '#DADDE1',
+            'btn-default-color': '#5C646c',
+            'input-placeholder-color': '#A9B1B9',
+            'table-header-color': '#1a1c1f'
+          },
+          javascriptEnabled: true
+        }
+      }
+    )
+  }
+```
+### plugin
+引入`AntdDayjsWebpackPlugin`，用Day.js替换掉Ant Design中默认处理日期时间用的Moment.js，以减小打包体积
+
+### paths
+项目中可以通过在config-overrides.js中重写自定义的webpack配置，避免直接去修改config模块
+```js
+appWebpackOverrides: resolveApp('config-overrides.js'),
+```
+
+需要配合修改start脚本中读取配置的逻辑：
+```js
+const config = useOverrides
+    ? require(paths.appWebpackOverrides)(
+        configFactory("development"),
+        process.env.NODE_ENV
+      )
+    : configFactory('development');
 ```
