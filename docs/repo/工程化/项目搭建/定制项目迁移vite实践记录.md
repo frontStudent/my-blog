@@ -134,3 +134,6 @@ export default defineConfig({
   }
 })
 ```
+
+### 迁移实践参考
+https://zhuanlan.zhihu.com/p/391077878?utm_medium=social&utm_psn=1776993339017510913&utm_source=wechat_session
