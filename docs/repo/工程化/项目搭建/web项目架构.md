@@ -1,8 +1,19 @@
 ---
 sidebar_position: 1
 ---
+### 架构升级
+![mono](../imgs/mono.png)
 
-Lerna monorepo - git submodule
+monorepo的弊端在于，多个关系并不紧密的业务模块都在同一仓库中，git提交记录不够清晰，且若在回滚出现意外丢失代码情况，可能涉及多个业务模块，造成更大影响
+
+针对原先使用lerna进行管理的巨型monorepo进行升级，将每条业务线拆分为单个前端应用；
+
+而每个独立应用内部仍保留多包结构，在packages下通过git submodule引入scripts（自动化脚本模块）/ config（打包配置模块）/ common （内部组件库）等需要共享的仓库
+
+示意图如下：
+
+![jiagou](../imgs/jiagou.png)
+
 
 ### 添加子模块 
 ```
