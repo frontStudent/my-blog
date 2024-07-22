@@ -1,7 +1,15 @@
 ### 背景
+前端打包提测的流程如下:
+1. 在jenkins上进行构建
+2. 需要人为检查Jenkins上是否构建完成
+3. 构建完成后，将生成的压缩包链接手动复制到jira对应test任务的评论区
+4. 将生成的压缩包链接手动复制到企微，发给对应测试人员
+
 Jenkins版本过低无法使用网上常用的jira插件、企业微信插件以及Build user vars插件
 ![jenkins](../imgs/jenkins.png)
-但可以直接在构建阶段的脚本中
+
+### 解决方案
+直接在构建阶段的脚本中
 1. curl调用jira的api
 2. curl调用企业微信机器人的webhook地址
 3. curl调用jenkins的api获取构建人信息
@@ -23,13 +31,10 @@ BUILD_USER_NAME=$(echo $BUILD_CAUSE_JSON | tr "," "\n" | grep "userName" | awk -
 sendMsg() {
         #群聊机器人地址
         WEBHOOK_URL="xxx"
-
         fileHost='xxx'
-    
         message=''
-    
         if [ "$1" == true ]; then
-                        filepath="${fileHost}package_name-v${version}-${packagedate}.tar.gz"
+                filepath="${fileHost}package_name-v${version}-${packagedate}.tar.gz"
                 echo "filepath: ${filepath}"
                 message="打包成功 @${BUILD_USER_NAME} \n 分支: ${branchName} \n 版本: ${version} \n 新包地址: ${filepath}"
                 if [ ${branchName} == "test" ]; then
