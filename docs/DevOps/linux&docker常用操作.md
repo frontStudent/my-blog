@@ -4,12 +4,15 @@
 
 ### 操作
 esc + :wq保存退出
+
 ctrl + o + u键 在插入模式下回到普通模式撤销再回到插入模式
 
 ## Linux
 ### 基本命令
 ls -a 查看包括.开头的隐藏文件
+
 cp -r source_directory new_directory 复制目录并重命名
+
 mv old_filename new_filename 重命名
 
 lsof -i :3000 查看端口占用
