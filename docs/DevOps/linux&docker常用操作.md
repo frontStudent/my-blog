@@ -17,19 +17,27 @@ lsof -i :3000 查看端口占用
 
 ### 基本命令
 docker ps 查看正在运行的容器
+
 docker ps -a 查看所有容器
+
 docker stats my_container 查看容器资源占用情况
 
 docker inspect my_container | grep IPAddress 查看容器ip
+
 docker inspect my_container | grep Ports -A 20 查看容器端口映射
+
 docker inspect my_container | grep Mounts -A 10 查看容器挂载
 
 docker exec -it my_container /bin/bash 进入容器 exit 退出容器
+
 docker logs my_container 查看容器日志（容器启动后立刻退出可用来排查报错）
 
 docker stop my_container 停止容器
+
 docker start my_container 启动容器
+
 docker restart my_container 重启容器
+
 docker rm my_container 删除容器
 
 ### nginx容器
