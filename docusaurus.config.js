@@ -95,6 +95,12 @@ const config = {
             label: "DevOps",
           },
           {
+            type: "docSidebar",
+            sidebarId: "projectSidebar",
+            position: "left",
+            label: "个人项目",
+          },
+          {
             href: "https://github.com/frontStudent/my-blog.git",
             label: "GitHub",
             position: "right",

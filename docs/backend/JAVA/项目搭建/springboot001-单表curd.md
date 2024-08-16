@@ -4,7 +4,14 @@ https://www.bilibili.com/video/BV1j94y1W71m
 使用spring initializr快速搭建三层架构项目，集成mybatis完成单表CRUD
 
 ### spring initializr项目初始化
+
 ![init1](./imgs/init1.jpg)
+两种server url的区别：
+- https://start.spring.io  只能选择java17及以上的版本
+- https://start.aliyun.com 可以选择java8及以上
+
+集成依赖：
+![init2](./imgs/init2.jpg)
 
 ### resources目录下application.yml文件配置
 ```yml
