@@ -120,7 +120,7 @@ public class User {
     private Integer id;
     private String name;
     private Timestamp create_time;
-    private Timestamp update_time;W
+    private Timestamp update_time;
     // 省略getter和setter方法 可右击选择菜单中generate生成
 }
 

@@ -19,6 +19,8 @@ lsof -i :3000 查看端口占用
 ## docker
 
 ### 基本命令
+systemctl restart docker 重启docker，docker容器都启动着但无法正常访问的情况下，可以尝试
+
 docker ps 查看正在运行的容器
 
 docker ps -a 查看所有容器

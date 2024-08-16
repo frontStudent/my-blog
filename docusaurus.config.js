@@ -72,6 +72,12 @@ const config = {
         items: [
           {
             type: "docSidebar",
+            sidebarId: "basicSidebar",
+            position: "left",
+            label: "cs基础",
+          },
+          {
+            type: "docSidebar",
             sidebarId: "frontendSidebar",
             position: "left",
             label: "前端",
@@ -81,12 +87,6 @@ const config = {
             sidebarId: "backendSidebar",
             position: "left",
             label: "后端",
-          },
-          {
-            type: "docSidebar",
-            sidebarId: "basicSidebar",
-            position: "left",
-            label: "cs基础",
           },
           {
             type: "docSidebar",
