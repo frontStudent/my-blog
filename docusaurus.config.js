@@ -115,7 +115,7 @@ const config = {
             items: [
               {
                 label: "知识库",
-                to: "/docs/repo/intro",
+                to: "/docs/frontend/intro",
               },
             ],
           },
