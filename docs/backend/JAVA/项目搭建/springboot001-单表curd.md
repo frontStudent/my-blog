@@ -2,6 +2,7 @@ https://www.bilibili.com/video/BV1j94y1W71m
 
 ## 简介
 使用spring initializr快速搭建三层架构项目，集成mybatis完成单表CRUD
+目录结构如下
 
 ### spring initializr项目初始化
 
@@ -39,14 +40,80 @@ mybatis:
 ```
 
 ### 持久层
-```java
+这里使用mybatis时采用了注解方式和xml方式混用，（仅供演示）
 
+```java
+package org.syb001.singlecurd.mapper;
+
+import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Repository;
+import org.syb001.singlecurd.pojo.User;
+
+import java.util.List;
+
+@Mapper
+@Repository
+public interface UserMapper {
+    User getUserById(Integer id);
+
+    User getUserByName(String username);
+
+    @Select("select * from test_user")
+    List<User> getAllUser();
+
+    @Insert("insert into test_user(username) values(#{username})")
+    Integer addUser(String username);
+
+    @Update("update test_user set username = #{username} where id = #{id}")
+    Integer updateUser(Integer id, String username);
+
+    @Delete("delete from test_user where id=#{id}")
+    Integer deleteUser(Integer id);
+}
 ```
+
+resources/mapper/userMapper.xml
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.syb001.singlecurd.mapper.UserMapper">
+    <select id="getUserById" resultType="User">
+        select * from test_user where id = #{id}
+    </select>
+    <select id="getUserByName" resultType="User">
+        select * from test_user where username = #{username}
+    </select>
+</mapper>
+```
+
+### pojo
+
+### dto
+如何处理update和add的dto(只相差一个id，使用同一个dto进行分组校验还是用update的dto继承add的dto？)
+
+#### 引入validation进行校验
+
+https://segmentfault.com/a/1190000023471742
+
+@NotNull
+适用于基本数据类型(Integer，Long，Double等等)，当 @NotNull 注解被使用在 String 类型的数据上，则表示该数据不能为 Null（但是可以为 Empty）
+@NotBlank
+适用于 String 类型的数据上，加了@NotBlank 注解的参数不能为 Null 且 trim() 之后 size > 0
+@NotEmpty
+适用于 String、Collection集合、Map、数组等等，加了@NotEmpty 注解的参数不能为 Null 或者 长度为 0
+
+### 业务层
+
+
 
 ### 响应结果封装
 ```java
 
 ```
+
+静态方法中使用泛型
 
 ### 统一异常处理
 #### 自定义异常类
@@ -60,16 +127,30 @@ mybatis:
 ```java
 package org.syb001.singlecurd.common.exception;
 
+
 import lombok.Data;
+import org.syb001.singlecurd.common.enums.ErrorEnum;
 
 @Data
-public class BizException extends RuntimeException{
+// 插入用户时 用户名重复异常
+public class BizException extends RuntimeException {
+    private String errorCode;
     public BizException() {
         super();
     }
 
     public BizException(String message) {
         super(message);
+    }
+
+    public BizException(String errorCode, String message) {
+        super(message);
+        this.errorCode = errorCode;
+    }
+
+    public BizException(ErrorEnum errorEnum) {
+        super(errorEnum.getMessage());
+        this.errorCode = errorEnum.getCode();
     }
 
     public BizException(String message, Throwable cause) {
@@ -91,7 +172,8 @@ public class BizException extends RuntimeException{
 package org.syb001.singlecurd.common.enums;
 
 public enum ErrorEnum {
-    USER_DUPLICATE("USER_DUPLICATE", "用户名已被占用");
+    USER_DUPLICATE("USER_DUPLICATE", "用户名已被占用"),
+    USER_NOT_FOUND("USER_NOT_FOUND", "用户不存在");
 
     private final String code;
     private final String message;
