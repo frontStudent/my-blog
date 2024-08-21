@@ -2,7 +2,8 @@ https://www.bilibili.com/video/BV1j94y1W71m
 
 ## 简介
 使用spring initializr快速搭建三层架构项目，集成mybatis完成单表CRUD
-目录结构如下
+
+github地址：https://github.com/frontStudent/springboot-single-curd
 
 ### spring initializr项目初始化
 
@@ -40,13 +41,14 @@ mybatis:
 ```
 
 ### 持久层
-这里使用mybatis时采用了注解方式和xml方式混用，（仅供演示）
+这里使用mybatis时采用了注解方式和xml方式混用，稍复杂的查询使用了xml方式
 
 ```java
 package org.syb001.singlecurd.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
+import org.syb001.singlecurd.dto.request.UserQueryDto;
 import org.syb001.singlecurd.pojo.User;
 
 import java.util.List;
@@ -54,12 +56,8 @@ import java.util.List;
 @Mapper
 @Repository
 public interface UserMapper {
-    User getUserById(Integer id);
 
-    User getUserByName(String username);
-
-    @Select("select * from test_user")
-    List<User> getAllUser();
+    List<User> getUserByCondition(UserQueryDto userQueryDto);
 
     @Insert("insert into test_user(username) values(#{username})")
     Integer addUser(String username);
@@ -79,49 +77,66 @@ resources/mapper/userMapper.xml
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.syb001.singlecurd.mapper.UserMapper">
-    <select id="getUserById" resultType="User">
-        select * from test_user where id = #{id}
-    </select>
-    <select id="getUserByName" resultType="User">
-        select * from test_user where username = #{username}
+    <select id="getUserByCondition" resultType="User">
+        select * from test_user
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="username != null">
+                and username = #{username}
+            </if>
+            <if test="startTime != null">
+                and create_time >= #{startTime}
+            </if>
+            <if test="endTime != null">
+                and create_time &lt;= #{endTime}
+            </if>
+        </where> order by update_time desc
     </select>
 </mapper>
 ```
 
+这边有两个注意点：
+1. 用mybatis动态SQL的where标签处理多个查询条件拼接，当查询条件为空时，where标签会自动去掉and
+2. xml中用&lt;符号替换小于号避免报错
+https://blog.csdn.net/weixin_44443884/article/details/114624744
+
 ### pojo
-
-### dto
-如何处理update和add的dto(只相差一个id，使用同一个dto进行分组校验还是用update的dto继承add的dto？)
-
-#### 引入validation进行校验
-
-https://segmentfault.com/a/1190000023471742
-
-@NotNull
-适用于基本数据类型(Integer，Long，Double等等)，当 @NotNull 注解被使用在 String 类型的数据上，则表示该数据不能为 Null（但是可以为 Empty）
-@NotBlank
-适用于 String 类型的数据上，加了@NotBlank 注解的参数不能为 Null 且 trim() 之后 size > 0
-@NotEmpty
-适用于 String、Collection集合、Map、数组等等，加了@NotEmpty 注解的参数不能为 Null 或者 长度为 0
-
-### 业务层
-
-
-
-### 响应结果封装
 ```java
+package org.syb001.singlecurd.pojo;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class User {
+    private Integer id;
+    private String username;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updateTime;
+}
 
 ```
 
-静态方法中使用泛型
+### 业务层
+业务层下一般分为Impl实现类和接口
 
-### 统一异常处理
+### 异常处理
 #### 自定义异常类
-
 在exception包下新建BizException类，继承RuntimeException
 之后可以在idea中使用command + n快捷键重写相关方法
 ![except](./imgs/except.jpg)
-
 
 代码如下：
 ```java
@@ -168,6 +183,53 @@ public class BizException extends RuntimeException {
 ```
 
 #### 异常错误码与错误信息枚举类
+
+#### 全局异常处理类
+
+### dto
+update和add的dto只相差一个id，可以使用同一个dto进行分组校验，也可以用update的dto继承add的dto
+
+#### 引入validation进行校验
+
+https://segmentfault.com/a/1190000023471742
+
+- @NotNull
+适用于基本数据类型(Integer，Long，Double等等)，当 @NotNull 注解被使用在 String 类型的数据上，则表示该数据不能为 Null（但是可以为 Empty）
+- @NotBlank
+适用于 String 类型的数据上，加了@NotBlank 注解的参数不能为 Null 且 trim() 之后 size > 0
+- @NotEmpty
+适用于 String、Collection集合、Map、数组等等，加了@NotEmpty 注解的参数不能为 Null 或者 长度为 0
+
+#### 响应结果封装
+```java
+package org.syb001.singlecurd.dto.response;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+// 给前端的统一响应结果
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Result<T> {
+    private String code;
+    private String message;
+
+    private T data;
+
+    public static <T> Result<T> success(String message, T data){
+        return new Result<T>("SUCCESS", message, data);
+    }
+
+    public static <T> Result<T> fail(String message, T data){
+        return new Result<T>("FAIL", message, data);
+    }
+}
+```
+
+静态方法中使用泛型
+
+
 ```java
 package org.syb001.singlecurd.common.enums;
 
