@@ -45,6 +45,8 @@ docker restart my_container 重启容器
 
 docker rm my_container 删除容器
 
+### redis容器
+
 ### nginx容器
 ```
 # 生成容器

@@ -1,0 +1,1 @@
+Spring容器在进行初始化时，会将xml配置的的信息封装成一个BeanDeﬁnition对象，所有的 BeanDeﬁnition存储到一个名为beanDeﬁnitionMap的Map集合中去，Spring框架再对该Map进行遍 历，使用反射创建Bean实例对象，创建好的Bean对象存储在一个名为singletonObjects的Map集合中，当调用 getBean方法 时则最终从该Map集合中取出Bean实例对象返回。
