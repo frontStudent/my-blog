@@ -1,23 +1,7 @@
-## vim
-### 配置
-一开始在/etc/vim/vimrc文件中配置但未生效，后来在~/.vimrc文件中配置生效
 
-### 操作
-esc + :wq保存退出
+docker镜像源配置：/etc/docker或~/.docker 修改后需systemctl restart docker
 
-ctrl + o + u键 在插入模式下回到普通模式撤销再回到插入模式
-
-## Linux
-### 基本命令
-ls -a 查看包括.开头的隐藏文件
-
-cp -r source_directory new_directory 复制目录并重命名
-
-mv old_filename new_filename 重命名
-
-lsof -i :3000 查看端口占用
-## docker
-
+https://blog.csdn.net/llc580231/article/details/139979603
 ### 基本命令
 systemctl restart docker 重启docker，docker容器都启动着但无法正常访问的情况下，可以尝试
 
@@ -33,6 +17,9 @@ docker inspect my_container | grep Ports -A 20 查看容器端口映射
 
 docker inspect my_container | grep Mounts -A 10 查看容器挂载
 
+docker info | grep Registry -A 20 查看镜像源
+
+
 docker exec -it my_container /bin/bash 进入容器 exit 退出容器
 
 docker logs my_container 查看容器日志（容器启动后立刻退出可用来排查报错）
@@ -45,7 +32,11 @@ docker restart my_container 重启容器
 
 docker rm my_container 删除容器
 
+### kafka容器
+
+
 ### redis容器
+docker run -p 6379:6379 --name redis-test -v /home/redis/data:/data -v /home/redis/conf/redis.conf:/etc/redis/redis.conf -d redis redis-server /etc/redis/redis.conf
 
 ### nginx容器
 ```
