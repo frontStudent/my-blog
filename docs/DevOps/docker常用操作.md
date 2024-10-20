@@ -19,7 +19,6 @@ docker inspect my_container | grep Mounts -A 10 查看容器挂载
 
 docker info | grep Registry -A 20 查看镜像源
 
-
 docker exec -it my_container /bin/bash 进入容器 exit 退出容器
 
 docker logs my_container 查看容器日志（容器启动后立刻退出可用来排查报错）
