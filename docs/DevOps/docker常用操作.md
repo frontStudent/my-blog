@@ -1,7 +1,50 @@
 
-docker镜像源配置：/etc/docker或~/.docker 修改后需systemctl restart docker
+docker镜像源配置：/etc/docker/daemon.json或~/.docker/daemon.json 修改后需systemctl restart docker
 
 https://blog.csdn.net/llc580231/article/details/139979603
+
+### docker registry搭建私有镜像仓库
+```shell
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+```
+
+配置docker支持http
+```shell
+vim /etc/docker/daemon.json
+```
+添加registry地址和端口号
+```json
+{
+  "insecure-registries":["1.12.238.239:5000"]
+}
+```
+需要重启才能生效
+```shell
+systemctl restart docker
+```
+
+上传镜像到私有仓库
+```shell
+# 先根据dockerfile构建本地镜像
+docker build -t my_image:tag .
+
+# 给镜像打标签 使其别名符合私有仓库地址
+docker tag my_image:tag 1.12.238.239:5000/my_image:tag
+docker push 1.12.238.239:5000/my_image:tag
+```
+注：标签只是镜像的别名，不会占有额外的存储空间，可以给同一个镜像打多个标签，但删除一个标签不会删除镜像本身
+
+查看镜像仓库
+```shell
+curl -X GET http://1.12.238.239:5000/v2/_catalog
+```
+
+拉取镜像
+```shell
+docker pull 1.12.238.239:5000/my_image:tag
+```
+
+
 ### 基本命令
 systemctl restart docker 重启docker，docker容器都启动着但无法正常访问的情况下，可以尝试
 
