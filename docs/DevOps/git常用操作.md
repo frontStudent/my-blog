@@ -1,3 +1,16 @@
+
+### 用户名和邮箱
+#### 设置
+```shell
+git config --global user.name "Shi Yubei, CIH-5-9"
+git config --global user.email "yubei.shi@lingyue-digital.com"
+```
+#### 查看
+```shell
+git config --global user.name 
+git config --global user.email
+```
+
 ### remote
 #### 查看远程仓库地址
 ```shell
