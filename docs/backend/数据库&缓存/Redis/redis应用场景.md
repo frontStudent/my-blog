@@ -1,4 +1,4 @@
-![redis](../imgs/redis.png)
+![redis](../../imgs/redis.png)
 
 ## 排行榜
 ## 接口限流
