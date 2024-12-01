@@ -1,4 +1,3 @@
-
 ## 理论
 
 ### 概览
@@ -15,14 +14,87 @@ Kafka 中 Topic 被分成多个 Partition 分区；Topic 是一个逻辑概念�
 
 kafka 集群中，每个 partition 都可以配置多个副本，这些副本分布在不同的 broker 上，以实现数据的冗余和高可用性。当一个 partition 的 leader broker 发生故障时，其中一个 follower broker 将被选举为新的 leader，继续处理该 partition 的读写请求。
 
+### 消费者组
+1、每个分区只能被一个消费组中的一个消费者所消费，
+2、消费组中一个消费者可以消费多个分区。
+3、多个消费组，每个消费组都可以消费topic中的所有数据，且消费位移之间互不影响。
+4、一个消费组存在的消费者个数，大于分区数时，会出现消费组，未被分配到分区
 
-## zookeeper模式和kraft模式
+### offset提交
+Kafka 将位移信息作为一条一条普通的 Kafka 消息，保存在一个特定的 Topic 中，这个 Topic 的名字叫 __consumer_offsets，也可以叫做位移主题。
 
+位移主题的消息格式是键值对形式。它的键（key）包含了消费者组、主题和分区的信息，值（value）则是具体的位移。
 
+例如，键可能是类似于 “consumer - group - 1:my - topic:partition - 0” 这样的格式，它明确了是消费者组 “consumer - group - 1” 对于主题 “my - topic” 的分区 0 的位移记录
+1、自动提交
+2、手动提交
 
-## Docker搭建多节点Kafka集群，包括一个ZooKeeper和三个Kafka Broker
+### 分区分配策略
+1、range
+2、roundrobin
+3、sticky
+
+通过指定key的方式，具有相同key的消息会分发到同一个partition中，从而保证消息的有序性。
+
+## Docker搭建Kafka集群，zookeeper模式和kraft模式
+
+### zookeeper模式
+``` yml
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    environment:
+      - ZOO_ENABLE_AUTH=no
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - "2181:2181"
+
+  kafka1:
+    image: bitnami/kafka:latest
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+
+  kafka2:
+    image: bitnami/kafka:latest
+    environment:
+      - KAFKA_BROKER_ID=2
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9093
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    ports:
+      - "9093:9093"
+    depends_on:
+      - zookeeper
+
+  kafka3:
+    image: bitnami/kafka:latest
+    environment:
+      - KAFKA_BROKER_ID=3
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9094
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    ports:
+      - "9094:9094"
+    depends_on:
+      - zookeeper
+
+```
 参考：https://blog.csdn.net/Hreo111/article/details/138550524
 
+### kraft模式
+
+参考：https://juejin.cn/post/7187301063832109112
 ### kafka基本命令
 
 首先进入kafka容器内部
@@ -44,3 +116,28 @@ kafka-console-producer.sh --topic test-topic --bootstrap-server kafka1:9092
 kafka-console-consumer.sh --topic test-topic --from-beginning --bootstrap-server kafka1:9092
 
 ```
+
+
+## kafka 客户端 API
+
+```xml
+<dependency>
+    <groupId>org.apache.kafka</groupId>
+    <artifactId>kafka-clients</artifactId>
+    <version>3.8.0</version>
+</dependency>
+```
+
+### 自定义分区器
+自定义分区器需要实现 Kafka 的 Partitioner 接口，并重写 partition 方法。在 partition 方法中，可以根据消息的 key 和 partition 的数量等信息，计算出消息应该被发送到哪个 partition 中。
+
+## kafka 与 springboot 集成
+
+```xml
+<dependency>
+    <groupId>org.springframework.kafka</groupId>
+    <artifactId>spring-kafka</artifactId>
+</dependency>
+```
+
+### idea插件: kafka
