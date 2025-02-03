@@ -1,6 +1,7 @@
 
 ## netty demo中维护在线用户
 使用`Map<String, Channel>`来维护在线用户，通过解析消息格式中的 type 来确定是上线操作还是聊天操作
+如果考虑多端登录，则可以使用`Map<String, Set<Channel>>`来维护
 ## springboot集成netty
 
 通过实现 CommandLineRunner 接口，在项目启动时，执行 run 方法，启动 Netty 服务器。
@@ -51,3 +52,9 @@ public class NettyServer {
     }
 }
 ```
+
+### springboot整合netty无法autowired依赖注入的问题
+https://blog.csdn.net/zisuu/article/details/105922371
+
+
+
