@@ -92,13 +92,13 @@ const config = {
             type: "docSidebar",
             sidebarId: "dataSidebar",
             position: "left",
-            label: "大数据",
+            label: "Data",
           },
           {
             type: "docSidebar",
             sidebarId: "aiSidebar",
             position: "left",
-            label: "ai",
+            label: "AI",
           },
           {
             type: "docSidebar",
