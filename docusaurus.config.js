@@ -70,12 +70,12 @@ const config = {
           src: "img/logo.svg",
         },
         items: [
-          {
-            type: "docSidebar",
-            sidebarId: "basicSidebar",
-            position: "left",
-            label: "cs基础",
-          },
+          // {
+          //   type: "docSidebar",
+          //   sidebarId: "basicSidebar",
+          //   position: "left",
+          //   label: "cs基础",
+          // },
           {
             type: "docSidebar",
             sidebarId: "frontendSidebar",
@@ -90,16 +90,28 @@ const config = {
           },
           {
             type: "docSidebar",
+            sidebarId: "dataSidebar",
+            position: "left",
+            label: "大数据",
+          },
+          {
+            type: "docSidebar",
+            sidebarId: "aiSidebar",
+            position: "left",
+            label: "ai",
+          },
+          {
+            type: "docSidebar",
             sidebarId: "devopsSidebar",
             position: "left",
             label: "DevOps",
           },
-          {
-            type: "docSidebar",
-            sidebarId: "projectSidebar",
-            position: "left",
-            label: "个人项目",
-          },
+          // {
+          //   type: "docSidebar",
+          //   sidebarId: "projectSidebar",
+          //   position: "left",
+          //   label: "个人项目",
+          // },
           {
             href: "https://github.com/frontStudent/my-blog.git",
             label: "GitHub",
