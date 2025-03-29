@@ -11,7 +11,6 @@
 
 注意 brew 安装 on-my-zsh 后，原先的zshrc文件会被覆盖，之前的 zshrc 文件内容会被保存到.zshrc.pre-oh-my-zsh文件中，需要将原先的配置内容复制到新的zshrc文件中
 
-
 ## 其他小工具
 
 ### scroll reverser
@@ -21,3 +20,5 @@
 mac自带输入法平替，好用
 
 ### 截图工具Snipaste
+
+### 剪贴板管理工具raycast

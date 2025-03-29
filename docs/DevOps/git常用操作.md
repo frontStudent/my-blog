@@ -1,4 +1,8 @@
-
+### 复制当前分支名称
+```shell
+git branch --show-current | tr -d '\n' | pbcopy
+```
+参考：https://developer.aliyun.com/article/1395169#:~:text=console.log%28%27%E5%BD%93%E5%89%8D%E5%88%86%E6%94%AF%3A%27%2C,branch%29%20ncp.copy%28branch%29
 ### 用户名和邮箱
 #### 设置
 ```shell
